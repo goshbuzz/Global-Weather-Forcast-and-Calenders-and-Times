@@ -21,6 +21,7 @@
 window.addEventListener("DOMContentLoaded", () => {
   NavUI.init();
   setFooterYear();
+  initReveals();
   const CE = CalendarEngine;
   const dateInput = document.getElementById("cal-date");
   const todayBtn = document.getElementById("cal-today");
@@ -49,6 +50,9 @@ window.addEventListener("DOMContentLoaded", () => {
     const jul = CE.gregorianToJulian(y, m, d);
     const cop = CE.gregorianToCoptic(y, m, d);
     const may = CE.gregorianToMayan(y, m, d);
+    const bud = CE.gregorianToBuddhist(y, m, d);
+    const jap = CE.gregorianToJapanese(y, m, d);
+    const vie = CE.gregorianToVietnamese(y, m, d);
 
     const ethName = CE.ETH_MONTHS[eth.m - 1];
     const chiName = CE.CHINESE_MONTHS[chi.month - 1] || `Month ${chi.month}`;
@@ -116,6 +120,24 @@ window.addEventListener("DOMContentLoaded", () => {
         <div class="name">${cop.day} ${cop.monthEn} ${cop.year}</div>
         <div class="sub">13 months · Coptic year = Ethiopian year − 24</div>
         <div class="meta">No leap rule; drifts one day per 4 years</div>
+      </div>
+      <div class="cal-card" style="border-top:4px solid var(--leaf)">
+        <div class="sys">Buddhist / Thai calendar</div>
+        <div class="name">${d} ${CE.GREG_MONTHS[m - 1]} ${bud.year} BE</div>
+        <div class="sub">${bud.monthTh} · Buddhist Era = CE + 543</div>
+        <div class="meta">Songkran (Thai New Year) ≈ 13–15 April</div>
+      </div>
+      <div class="cal-card" style="border-top:4px solid var(--accent)">
+        <div class="sys">Japanese era calendar</div>
+        <div class="name">${jap.year} ${jap.eraJa} (${jap.eraName})</div>
+        <div class="sub">${d} ${jap.monthEn} ${y} · era year ${jap.year}</div>
+        <div class="meta">Era begins ${jap.eraJa} · ${jap.eraName} period</div>
+      </div>
+      <div class="cal-card" style="border-top:4px solid var(--sky)">
+        <div class="sys">Vietnamese calendar (lunisolar, approx.)</div>
+        <div class="name">${vie.can} ${vie.chi} · ${vie.year}</div>
+        <div class="sub">${vie.monthVi}, day ${vie.day} · Tết ≈ ${vie.cnyGregorian.year}-${String(vie.cnyGregorian.month).padStart(2,"0")}-${String(vie.cnyGregorian.day).padStart(2,"0")}</div>
+        <div class="meta">Can–Chi zodiac · lunisolar, approx. via lunation math</div>
       </div>
       <div class="cal-card" style="border-top:4px solid var(--muted)">
         <div class="sys">Mayan (GMT correlation)</div>
@@ -226,6 +248,8 @@ window.addEventListener("DOMContentLoaded", () => {
         <li><a href="timezones.html">World Time Zones</a></li>
         <li><a href="cosmos.html">Sun, Stars & Horoscope</a></li>
         <li><a href="faq.html">FAQ</a></li>
+    <li><a href="contact.html">Contact</a></li>
+        <li><a href="contact.html">Contact</a></li>
       </ul>
     </nav>
     <div class="nav-actions">
@@ -241,6 +265,8 @@ window.addEventListener("DOMContentLoaded", () => {
       <li><a href="timezones.html">World Time Zones</a></li>
       <li><a href="cosmos.html">Sun, Stars & Horoscope</a></li>
       <li><a href="faq.html">FAQ</a></li>
+    <li><a href="contact.html">Contact</a></li>
+        <li><a href="contact.html">Contact</a></li>
     </ul>
   </div>
   <div class="nav-backdrop" id="nav-backdrop"></div>

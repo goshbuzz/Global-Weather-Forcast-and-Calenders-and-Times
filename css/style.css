@@ -448,3 +448,106 @@ body::before {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* ==========================================================================
+   Design enhancements — glassmorphism, glow, reveals, contact form
+   ========================================================================== */
+
+/* Glass card variant */
+.glass {
+  background: rgba(15, 21, 38, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+/* Animated ambient glow */
+.hero-glow {
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(circle at 25% 30%, rgba(251, 191, 36, 0.10) 0%, transparent 35%),
+    radial-gradient(circle at 75% 70%, rgba(34, 211, 238, 0.08) 0%, transparent 35%),
+    radial-gradient(circle at 50% 5%, rgba(167, 139, 250, 0.07) 0%, transparent 30%);
+  z-index: -2; pointer-events: none;
+}
+.hero-glow::after {
+  content: ""; position: absolute; inset: 0;
+  background-image:
+    radial-gradient(white, rgba(255,255,255,0) 40%),
+    radial-gradient(white, rgba(255,255,255,0) 40%),
+    radial-gradient(white, rgba(255,255,255,0) 40%);
+  background-size: 150px 150px, 200px 200px, 100px 100px;
+  background-position: 0 0, 0 0, 0 0;
+  animation: drift 20s linear infinite;
+  opacity: 0.35;
+}
+@keyframes drift {
+  0% { background-position: 0 0, 0 0, 0 0; }
+  100% { background-position: 200px 100px, -100px -200px, 100px -100px; }
+}
+
+/* Reveal-on-scroll */
+.reveal { opacity: 0; transform: translatey(24px); transition: opacity 700ms ease, transform 700ms ease; }
+.reveal.visible { opacity: 1; transform: translatey(0); }
+
+/* Stat cards */
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.stat-card {
+  background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.25rem; text-align: center;
+}
+.stat-card .value { font-size: 1.75rem; font-weight: 800; color: var(--accent); display: block; }
+.stat-card .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-top: 0.25rem; }
+
+/* Enhanced calendar cards */
+.cal-card { position: relative; overflow: hidden; }
+.cal-card::before {
+  content: ""; position: absolute; inset: 0 0 100% 0; background: linear-gradient(to bottom, rgba(255,255,255,0.03), transparent); opacity: 0; transition: opacity var(--transition);
+}
+.cal-card:hover::before { opacity: 1; }
+
+/* Contact form */
+.contact-wrap { max-width: 640px; margin: 0 auto; }
+.contact-form { display: grid; gap: 1rem; }
+.contact-form input, .contact-form textarea, .contact-form select {
+  width: 100%; background: rgba(0,0,0,0.35); border: 1px solid var(--border);
+  color: var(--text); padding: 0.85rem 1rem; border-radius: 12px; font-size: 1rem;
+  font-family: inherit;
+}
+.contact-form input::placeholder, .contact-form textarea::placeholder { color: var(--muted); }
+.contact-form textarea { min-height: 150px; resize: vertical; }
+.contact-form button.btn-primary { align-self: start; width: fit-content; }
+.form-msg { margin-top: 0.75rem; font-size: 0.9rem; }
+.form-msg.ok { color: var(--leaf); }
+.form-msg.err { color: var(--ruby); }
+
+/* Toast notification */
+.toast {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 9999;
+  background: var(--panel); border: 1px solid var(--border); color: var(--text);
+  padding: 1rem 1.25rem; border-radius: var(--radius); box-shadow: var(--shadow-strong);
+  transform: translatey(120px); transition: transform 400ms ease, opacity 400ms ease;
+  opacity: 0; pointer-events: none; max-width: 320px;
+}
+.toast.show { transform: translatey(0); opacity: 1; }
+.toast .title { font-weight: 800; color: var(--accent); margin-bottom: 0.25rem; }
+
+/* Empty state */
+.empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); }
+.empty-state .emoji { font-size: 3rem; display: block; margin-bottom: 1rem; opacity: 0.5; }
+
+/* Detail pill */
+.pill {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.25rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700;
+  border: 1px solid var(--border); color: var(--text-dim); background: var(--panel);
+}
+.pill.accent { border-color: rgba(251,191,36,0.35); color: var(--accent); background: var(--accent-soft); }
+
+/* Responsive refinements */
+@media (max-width: 640px) {
+  .stat-row { grid-template-columns: 1fr; }
+  .hero-glow { display: none; }
+}

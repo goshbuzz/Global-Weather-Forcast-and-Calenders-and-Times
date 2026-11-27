@@ -33,7 +33,7 @@
     {
       "@type": "Question",
       "name": "Which calendars does the site support?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Gregorian, Ethiopian (13 months), Chinese (lunisolar), Hindu/Vedic (tithi, nakshatra, yoga, karana, Vikram & Shaka samvat), Punjabi Desi (Bikrami) and Nanakshahi, Islamic Hijri, Hebrew, Persian Solar Hijri, Julian, Coptic/Egyptian, and Mayan (Tzolkʼin, Haabʼ, Long Count)." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Gregorian, Ethiopian (13 months), Chinese (lunisolar), Hindu/Vedic (tithi, nakshatra, yoga, karana, Vikram & Shaka samvat), Punjabi Desi (Bikrami) & Nanakshahi, Islamic Hijri, Hebrew, Persian Solar Hijri, Julian, Coptic/Egyptian, Mayan (Tzolkʼin, Haabʼ, Long Count), Buddhist/Thai (BE = CE + 543), Japanese era (Reiwa, Heisei, Showa…), and Vietnamese lunisolar calendars." }
     },
     {
       "@type": "Question",
@@ -87,6 +87,7 @@
 window.addEventListener("DOMContentLoaded", () => {
   NavUI.init();
   setFooterYear();
+  initReveals();
   document.querySelectorAll(".faq-question").forEach(btn => {
     btn.addEventListener("click", () => {
       const item = btn.parentElement;
@@ -124,6 +125,8 @@ window.addEventListener("DOMContentLoaded", () => {
       <li><a href="timezones.html">World Time Zones</a></li>
       <li><a href="cosmos.html">Sun, Stars & Horoscope</a></li>
       <li><a href="faq.html">FAQ</a></li>
+    <li><a href="contact.html">Contact</a></li>
+        <li><a href="contact.html">Contact</a></li>
     </ul>
   </div>
   <div class="nav-backdrop" id="nav-backdrop"></div>
