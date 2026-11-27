@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://goshbuzz.github.io/Global-Weather-Focast-and-Calenders-and-Times/sitemap.xml

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Weather Forecast • World Calendars • Time Zones</title>
+<meta name="description" content="Live weather forecasts from Open-Meteo, world calendars from Gregorian to Chinese, Hindi (Vedic), Punjabi and Ethiopian 13-month systems, all world time zones, and an interactive Sun–Earth–stars visualization. SEO-friendly weather & calendar hub.">
+<meta name="keywords" content="weather forecast, world calendars, Ethiopian 13 month calendar, Gregorian calendar, Chinese calendar, Hindu calendar, Punjabi calendar, time zones, 33rd parallel, sun movement, horoscope stars, Open-Meteo, global time">
+<meta name="author" content="Global Weather Forecast & Calendars">
+<link rel="canonical" href="https://goshbuzz.github.io/Global-Weather-Focast-and-Calenders-and-Times/">
+<meta property="og:title" content="Global Weather Forecast • World Calendars • Time Zones">
+<meta property="og:description" content="Live Open-Meteo weather, all world calendars including the Ethiopian 13-month calendar, time zones for every country, and an interactive Sun–Earth–stars horoscope visualization.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://goshbuzz.github.io/Global-Weather-Focast-and-Calenders-and-Times/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Global Weather Forecast & World Calendars",
+  "url": "https://goshbuzz.github.io/Global-Weather-Focast-and-Calenders-and-Times/",
+  "description": "Live weather forecasts (Open-Meteo), world calendars, time zones and an interactive Earth–Sun–stars visualization.",
+  "sameAs": []
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Global Weather Forecast & World Calendars",
+  "url": "https://goshbuzz.github.io/Global-Weather-Focast-and-Calenders-and-Times/",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://goshbuzz.github.io/Global-Weather-Focast-and-Calenders-and-Times/index.html?q={search_term}",
+    "query-input": "required name=search_term"
+  }
+}
+</script>
+<link rel="stylesheet" href="css/style.css">
+<link rel="manifest" href="manifest.json">
+<script defer src="js/astro.js"></script>
+<script defer src="js/calendar-engine.js"></script>
+<script defer src="js/weather.js"></script>
+<script defer src="js/ui.js"></script>
+<script defer>
+window.addEventListener("DOMContentLoaded", () => {
+  NavUI.init();
+  setFooterYear();
+  const root = document.getElementById("weather-root");
+  const search = document.getElementById("city-search");
+  const btn = document.getElementById("city-btn");
+  const suggestions = document.getElementById("city-suggestions");
+  WeatherUI.init({ container: root, searchInput: search, searchBtn: btn, resultsBox: suggestions });
+  WeatherUI.load(31.5497, 74.3436, "Lahore");
+});
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-wrap">
+    <a class="brand" href="index.html"><span class="mark">🌍</span>Global<span>Weather</span></a>
+    <nav>
+      <ul class="nav-list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="calendars.html">World Calendars</a></li>
+        <li><a href="ethiopian.html">Ethiopian 13-Month Calendar</a></li>
+        <li><a href="timezones.html">World Time Zones</a></li>
+        <li><a href="cosmos.html">Sun, Stars & Horoscope</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobile-nav">
+    <div class="panel-head">
+      <strong style="color:var(--accent)">Global Weather</strong>
+      <button class="close-btn" id="nav-close">✕</button>
+    </div>
+    <ul>
+      <li><a href="index.html">Home & Weather</a></li>
+      <li><a href="calendars.html">World Calendars</a></li>
+      <li><a href="ethiopian.html">Ethiopian 13-Month Calendar</a></li>
+      <li><a href="timezones.html">World Time Zones</a></li>
+      <li><a href="cosmos.html">Sun, Stars & Horoscope</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+    </ul>
+  </div>
+  <div class="nav-backdrop" id="nav-backdrop"></div>
+</header>
+
+<main>
+  <!-- ================= HERO + WEATHER ================= -->
+  <section class="hero">
+    <div class="hero-head">
+      <div class="kicker">Live weather · Open-Meteo</div>
+      <h1>Global Weather Forecast &amp; World Time</h1>
+      <p>Current conditions, 7-day forecasts, and weather codes for any city in the world — powered by <a style="color:var(--sky)">Open-Meteo</a>, with no API key required. Search any city, from Sahiwal to Sydney.</p>
+    </div>
+    <div class="weather-search">
+      <input type="text" id="city-search" placeholder="Search any city (e.g. Lahore, London, New York…)" autocomplete="off">
+      <button id="city-btn" class="btn-primary">Search</button>
+    </div>
+    <div id="city-suggestions" style="display:none;position:absolute;left:0;right:0;background:var(--panel);border:1px solid var(--border);border-top:none;border-radius:0 0 12px 12px;z-index:50;max-height:340px;overflow-y:auto;margin-top:0.5rem"></div>
+    <div id="weather-root"></div>
+  </section>
+
+  <!-- ================= FEATURES ================= -->
+  <section class="section">
+    <div class="section-head text-center">
+      <span class="kicker">One platform, four globes</span>
+      <h2>Weather, Calendars, Times & the Sky</h2>
+      <p>Built for travelers, researchers, students and sky-watchers: live forecasts, every major calendar system, all IANA time zones, and a visual Earth–Sun–stars model.</p>
+    </div>
+    <div class="grid features">
+      <div class="feat-card">
+        <div class="feat-icon" style="background:var(--sky-soft);color:var(--sky)">☀️</div>
+        <h3>Live Weather Forecast</h3>
+        <p>Geocoding + 7-day forecast from Open-Meteo: temperature, humidity, wind, precipitation chance, sunrise/sunset and WMO weather codes.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:var(--earth-soft);color:var(--earth)">📅</div>
+        <h3>World Calendars</h3>
+        <p>Gregorian, Chinese, Hindu (Vedic), Punjabi Desi &amp; Nanakshahi, Hijri, Hebrew, Persian, Julian, Coptic, Mayan — side by side for any date.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:var(--leaf-soft);color:var(--leaf)">🌙</div>
+        <h3>Ethiopian 13-Month Calendar</h3>
+        <p>12 months of 30 days plus Pagumē (5–6 days), with a direct month-by-month comparison against the Gregorian calendar.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:var(--ruby-soft);color:var(--ruby)">🕐</div>
+        <h3>All World Time Zones</h3>
+        <p>Every IANA zone with live local times and offsets, plus the 33rd parallel north with city clocks along the line.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:var(--accent-soft);color:var(--accent)">🌌</div>
+        <h3>Sun, Stars &amp; Horoscope</h3>
+        <p>How Earth's tilt and orbit move the Sun through the zodiac, why the night sky changes with the seasons, leading stars, precession and the 13th constellation.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:var(--sky-soft);color:var(--sky)">🔍</div>
+        <h3>SEO · AEO · GEO Ready</h3>
+        <p>Structured data, semantic markup, FAQ schema and direct-answer content built for search engines, answer engines and generative AI.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SEO CONTENT ================= -->
+  <section class="section" id="seo-content">
+    <div class="section-head text-center">
+      <span class="kicker">About this service</span>
+      <h2>Global Weather Forecast and All World Calendars</h2>
+    </div>
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+      <div class="panel">
+        <h3 style="color:var(--sky);margin-bottom:0.75rem">Weather data — Open-Meteo</h3>
+        <p>We call the <a style="color:var(--sky)">Open-Meteo geocoding API</a> to turn a city name into latitude and longitude, then request the <a style="color:var(--sky)">Open-Meteo forecast API</a> for current conditions and a 7-day daily forecast. WMO weather codes (0 = Clear sky … 99 = Thunderstorm with heavy hail) are translated into plain language.</p>
+      </div>
+      <div class="panel">
+        <h3 style="color:var(--earth);margin-bottom:0.75rem">Every calendar culture</h3>
+        <p>From the Gregorian civil calendar to the Chinese lunisolar calendar, Hindu/Vedic panchang elements (tithi, nakshatra, yoga, karana), Punjabi Desi and Nanakshahi months, the Islamic Hijri and Hebrew calendars, Persian Solar Hijri, Julian, Coptic/Egyptian and the Mayan cycle.</p>
+      </div>
+      <div class="panel">
+        <h3 style="color:var(--accent);margin-bottom:0.75rem">Ethiopian 13-month calendar</h3>
+        <p>Ethiopia follows a 13-month year: 12 months of exactly 30 days, plus Pagumē with 5 days (6 in leap years). It runs roughly 7–8 years behind the Gregorian calendar. Our converter compares both systems month by month.</p>
+      </div>
+      <div class="panel">
+        <h3 style="color:var(--ruby);margin-bottom:0.75rem">Time zones of the world</h3>
+        <p>Live clocks for every IANA time zone with UTC offsets and daylight-saving flags. The 33rd parallel north page shows local times for cities sitting on that latitude line, from Casablanca to Phoenix and Nagasaki.</p>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:1.5rem">
+      <h3 style="color:var(--text);margin-bottom:0.75rem">How the Sun moves and why the sky changes</h3>
+      <p>Earth spins on a 23.5° tilted axis, giving day and night, while orbiting the Sun once a year. From Earth, the Sun appears to travel along the ecliptic through the 12 zodiac signs (and the 13th constellation, Ophiuchus). Because Earth occupies a different place in its orbit each season, the night sky faces a different part of the galaxy — so the leading stars and visible constellations change through the year. Axial precession slowly shifts the pole stars over a ~26,000-year cycle.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>Global Weather &amp; Calendars</h4>
+        <p class="muted" style="font-size:0.9rem">Live forecasts via Open-Meteo · World calendars · Time zones · Solar-system visualization.</p>
+      </div>
+      <div>
+        <h4>Features</h4>
+        <ul>
+          <li><a href="index.html">Weather Forecast</a></li>
+          <li><a href="calendars.html">World Calendars</a></li>
+          <li><a href="ethiopian.html">Ethiopian Calendar</a></li>
+          <li><a href="timezones.html">Time Zones</a></li>
+          <li><a href="cosmos.html">Sun &amp; Stars</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Calendars</h4>
+        <ul>
+          <li><a href="calendars.html">Gregorian</a></li>
+          <li><a href="calendars.html">Chinese</a></li>
+          <li><a href="calendars.html">Hindi / Vedic</a></li>
+          <li><a href="calendars.html">Punjabi</a></li>
+          <li><a href="ethiopian.html">Ethiopian 13-month</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="footer-year"></span> Global Weather Forecast &amp; Calendars</span>
+      <span>Non-religious dates are approximate conversions — verify religious dates with local authorities.</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

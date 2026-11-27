@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sun, Stars & Horoscope — Earth's Motion, Zodiac & Precession</title>
+<meta name="description" content="Interactive visualization of how Earth's tilted axis and orbit move the Sun through the zodiac, why the night sky changes with the seasons, leading stars, axial precession and the 13th constellation Ophiuchus.">
+<meta name="keywords" content="sun movement earth orbit, zodiac constellations, night sky seasons, precession, 13th zodiac sign Ophiuchus, horoscope stars, leading stars, earth tilt 23.5, solar system visualization">
+<meta name="author" content="Global Weather Forecast & Calendars">
+<link rel="canonical" href="https://goshbuzz.github.io/Global-Weather-Focast-and-Calenders-and-Times/cosmos.html">
+<meta property="og:title" content="Sun, Stars & Horoscope — Interactive Earth & Sky Model">
+<meta property="og:description" content="How Earth's tilt and orbit move the Sun through the zodiac, why the night sky changes by season, leading stars, precession and the 13th constellation.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://goshbuzz.github.io/Global-Weather-Focast-and-Calenders-and-Times/cosmos.html">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="css/style.css">
+<script defer src="js/cosmos.js"></script>
+<script defer src="js/ui.js"></script>
+<script defer>
+window.addEventListener("DOMContentLoaded", () => {
+  NavUI.init();
+  setFooterYear();
+
+  const orrery = document.getElementById("cosmos-orrery");
+  const sky = document.getElementById("cosmos-sky");
+  const resize = () => {
+    const w = Math.min(orrery.parentElement.clientWidth, 900);
+    const h = Math.round(w * 0.62);
+    orrery.width = w; orrery.height = h;
+    sky.width = w; sky.height = h;
+    Cosmos.init({
+      orreryCanvas: orrery,
+      skyCanvas: sky,
+      dateInput: document.getElementById("cosmos-date"),
+      playBtn: document.getElementById("cosmos-play"),
+      speedInput: document.getElementById("cosmos-speed"),
+      viewBtns: [
+        document.getElementById("cosmos-view-orrery"),
+        document.getElementById("cosmos-view-sky")
+      ],
+      sunSign: document.getElementById("cosmos-sign"),
+      dayLabel: document.getElementById("cosmos-daylabel")
+    });
+  };
+  window.addEventListener("resize", resize);
+  resize();
+
+  document.getElementById("cosmos-view-orrery").addEventListener("click", () => {
+    orrery.style.display = "block"; sky.style.display = "none";
+  });
+  document.getElementById("cosmos-view-sky").addEventListener("click", () => {
+    orrery.style.display = "none"; sky.style.display = "block";
+  });
+});
+</script>
+<style>
+.cosmos-stage { display:flex; flex-direction:column; gap:1rem; align-items:center; }
+#cosmos-orrery, #cosmos-sky { width:100%; max-width:900px; border-radius:16px; border:1px solid var(--border); background:#04060d; display:block; }
+#cosmos-sky { display:none; }
+.cosmos-sign-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:0.75rem; margin-top:1rem; }
+.sign-card { border:1px solid var(--border); border-radius:12px; padding:0.9rem; background:var(--panel); display:flex; align-items:center; gap:0.75rem; }
+.sign-card .symbol { font-size:1.5rem; }
+.stars-table { width:100%; border-collapse:collapse; margin-top:0.5rem; }
+.stars-table th, .stars-table td { border:1px solid var(--border); padding:0.65rem; text-align:left; font-size:0.9rem; }
+.stars-table th { background:var(--panel-hover); text-transform:uppercase; font-size:0.75rem; letter-spacing:0.08em; color:var(--muted); }
+.precession-ring { width:220px; height:220px; border:2px dashed var(--border); border-radius:50%; position:relative; margin:0 auto 1rem; }
+.precession-dot { position:absolute;width:10px;height:10px;border-radius:50%;background:var(--accent);top:50%;left:50%;transform:translate(-50%,-50%);box-shadow:0 0 14px var(--accent);animation:prec 8s linear infinite alternate;}
+@keyframes prec { to { transform: translate(-50%,-50%) rotate(90deg) translate(70px) rotate(-90deg); } }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-wrap">
+    <a class="brand" href="index.html"><span class="mark">🌌</span>Cosmos<span>&amp; Horoscope</span></a>
+    <nav>
+      <ul class="nav-list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="calendars.html">World Calendars</a></li>
+        <li><a href="ethiopian.html">Ethiopian 13-Month Calendar</a></li>
+        <li><a href="timezones.html">World Time Zones</a></li>
+        <li><a href="cosmos.html" style="color:var(--sky)">Sun, Stars & Horoscope</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobile-nav">
+    <div class="panel-head"><strong style="color:var(--accent)">Sun &amp; Stars</strong><button class="close-btn" id="nav-close">✕</button></div>
+    <ul>
+      <li><a href="index.html">Home & Weather</a></li>
+      <li><a href="calendars.html">World Calendars</a></li>
+      <li><a href="ethiopian.html">Ethiopian 13-Month Calendar</a></li>
+      <li><a href="timezones.html">World Time Zones</a></li>
+      <li><a href="cosmos.html">Sun, Stars & Horoscope</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+    </ul>
+  </div>
+  <div class="nav-backdrop" id="nav-backdrop"></div>
+</header>
+
+<main>
+  <section class="page">
+    <div class="section-head">
+      <span class="kicker">Earth’s tilt, orbit & the living sky</span>
+      <h2>The Sun, the Zodiac & Your Horoscope Stars</h2>
+      <p>An interactive model of Earth orbiting the Sun: see the Sun's apparent path through the 12 zodiac signs (and the 13th constellation, Ophiuchus), watch the night sky change through the year, and explore leading stars and axial precession.</p>
+    </div>
+
+    <div class="cosmos-wrap">
+      <div class="cosmos-stage">
+        <canvas id="cosmos-orrery"></canvas>
+        <canvas id="cosmos-sky"></canvas>
+      </div>
+      <div class="cosmos-info">
+        <div class="stat"><div class="label">Sun is in</div><div class="val" id="cosmos-sign">♈ Aries</div></div>
+        <div class="stat"><div class="label">Date</div><div class="val" id="cosmos-date">–</div></div>
+        <div class="stat"><div class="label">Earth’s axis tilt</div><div class="val">23.5°</div></div>
+      </div>
+      <div class="cosmos-controls">
+        <div class="cosmos-date"><label>Date</label><input type="date" id="cosmos-date"></div>
+        <div class="cosmos-actions">
+          <button id="cosmos-play">⏸ Pause</button>
+          <button class="btn-ghost active" id="cosmos-view-orrery">Orrery</button>
+          <button class="btn-ghost" id="cosmos-view-sky">Night sky</button>
+          <label style="font-size:0.75rem;color:var(--muted);margin-left:0.6rem">Speed <input type="range" id="cosmos-speed" min="0" max="3" step="0.5" value="1" style="width:80px;vertical-align:middle"></label>
+        </div>
+        <div class="cosmos-date" style="justify-content:flex-end"><div id="cosmos-daylabel" style="font-weight:700;color:var(--accent)">–</div></div>
+      </div>
+    </div>
+
+    <!-- Explanations -->
+    <div class="section">
+      <div class="panel">
+        <h3 style="color:var(--sky)">1. Earth spins on a tilted axis — day and night</h3>
+        <p>Earth rotates once every ~24 hours around an axis tilted 23.5° to its orbital plane. The half facing the Sun has day; the half in shadow has night. As Earth spins, the Sun appears to rise in the east and set in the west — but really it is Earth that is turning.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="panel">
+        <h3 style="color:var(--sky)">2. Earth orbits the Sun — the year and the seasons</h3>
+        <p>Earth travels once around the Sun every 365.25 days. Its axis keeps pointing at the same spot in space (toward Polaris, roughly), so as Earth moves around the orbit, first the northern hemisphere leans toward the Sun (June solstice, summer there) and then away (December solstice). The equinoxes (March/September) are when both hemispheres get equal daylight.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="panel">
+        <h3 style="color:var(--sky)">3. The Sun appears to move through the zodiac</h3>
+        <p>Because Earth is moving, the Sun's position against the background stars changes ~1° per day along a circle called the <strong>ecliptic</strong>. Western (tropical) astrology divides this circle into 12 equal signs starting at the March equinox. Astronomy recognizes the same ecliptic but the actual constellations are unequal in size — and there is a 13th: <strong>Ophiuchus</strong>, which the Sun passes through about Nov 29 – Dec 17.</p>
+        <div class="sign-card-grid">
+          <div class="sign-card"><span class="symbol">♈</span><div><div style="font-weight:700">Aries</div><div style="font-size:0.8rem;color:var(--muted)">Mar 21 – Apr 19 · Fire</div></div></div>
+          <div class="sign-card"><span class="symbol">♉</span><div><div style="font-weight:700">Taurus</div><div style="font-size:0.8rem;color:var(--muted)">Apr 20 – May 20 · Earth</div></div></div>
+          <div class="sign-card"><span class="symbol">♊</span><div><div style="font-weight:700">Gemini</div><div style="font-size:0.8rem;color:var(--muted)">May 21 – Jun 20 · Air</div></div></div>
+          <div class="sign-card"><span class="symbol">♋</span><div><div style="font-weight:700">Cancer</div><div style="font-size:0.8rem;color:var(--muted)">Jun 21 – Jul 22 · Water</div></div></div>
+          <div class="sign-card"><span class="symbol">♌</span><div><div style="font-weight:700">Leo</div><div style="font-size:0.8rem;color:var(--muted)">Jul 23 – Aug 22 · Fire</div></div></div>
+          <div class="sign-card"><span class="symbol">♍</span><div><div style="font-weight:700">Virgo</div><div style="font-size:0.8rem;color:var(--muted)">Aug 23 – Sep 22 · Earth</div></div></div>
+          <div class="sign-card"><span class="symbol">♎</span><div><div style="font-weight:700">Libra</div><div style="font-size:0.8rem;color:var(--muted)">Sep 23 – Oct 22 · Air</div></div></div>
+          <div class="sign-card"><span class="symbol">♏</span><div><div style="font-weight:700">Scorpio</div><div style="font-size:0.8rem;color:var(--muted)">Oct 23 – Nov 21 · Water</div></div></div>
+          <div class="sign-card"><span class="symbol">♐</span><div><div style="font-weight:700">Sagittarius</div><div style="font-size:0.8rem;color:var(--muted)">Nov 22 – Dec 21 · Fire</div></div></div>
+          <div class="sign-card"><span class="symbol">♑</span><div><div style="font-weight:700">Capricorn</div><div style="font-size:0.8rem;color:var(--muted)">Dec 22 – Jan 19 · Earth</div></div></div>
+          <div class="sign-card"><span class="symbol">♒</span><div><div style="font-weight:700">Aquarius</div><div style="font-size:0.8rem;color:var(--muted)">Jan 20 – Feb 18 · Air</div></div></div>
+          <div class="sign-card"><span class="symbol">♓</span><div><div style="font-weight:700">Pisces</div><div style="font-size:0.8rem;color:var(--muted)">Feb 19 – Mar 20 · Water</div></div></div>
+          <div class="sign-card" style="border-color:rgba(167,139,250,0.3)"><span class="symbol" style="color:#a78bfa">⛎</span><div><div style="font-weight:700;color:#a78bfa">Ophiuchus (13th constellation)</div><div style="font-size:0.8rem;color:var(--muted)">Sun passes ~Nov 29 – Dec 17 · not a horoscope sign</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="panel">
+        <h3 style="color:var(--sky)">4. Why the night sky changes with the seasons</h3>
+        <p>At midnight, you look away from the Sun, out into the part of space opposite the Sun's direction. Since Earth is on the opposite side of its orbit six months later, the midnight sky faces the opposite direction — so winter skies show Orion and Sirius while summer skies show Scorpius and the Milky Way's core. The "leading star" of each season changes accordingly.</p>
+        <table class="stars-table">
+          <thead><tr><th>Leading star</th><th>Constellation</th><th>What it tells us</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Sirius</strong></td><td>Canis Major</td><td>Brightest star in the night sky; its heliacal rising once marked the Egyptian New Year and the Nile flood.</td></tr>
+            <tr><td><strong>Vega</strong></td><td>Lyra</td><td>Pole star roughly 12,000 years ago — and again in the far future — because of axial precession.</td></tr>
+            <tr><td><strong>Polaris</strong></td><td>Ursa Minor</td><td>Today's northern pole star, sitting almost directly above Earth's North Pole.</td></tr>
+            <tr><td><strong>Antares</strong></td><td>Scorpius</td><td>Red supergiant; a landmark of the southern summer sky and the ecliptic.</td></tr>
+            <tr><td><strong>Regulus</strong></td><td>Leo</td><td>Sits almost exactly on the ecliptic — the Moon and planets regularly pass in front of it.</td></tr>
+            <tr><td><strong>Canopus</strong></td><td>Carina</td><td>Second-brightest night star, key to southern-hemisphere navigation.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="panel">
+        <h3 style="color:var(--sky)">5. Precession, pole stars & the 13th constellation</h3>
+        <p>Earth's axis slowly wobbles like a spinning top — one full cycle takes about <strong>25,772 years</strong> (axial precession). This slowly shifts where the axis points (so Polaris will not always be the pole star) and shifts the position of the equinoxes against the constellations: the March equinox is currently in Pisces, drifting toward Aquarius — the basis of the "Age of Aquarius" idea.</p>
+        <div class="precession-ring"><div class="precession-dot" title="Axial precession: Earth's north pole traces a circle over ~26,000 years"></div></div>
+        <p style="font-size:0.9rem;color:var(--muted);text-align:center">Illustration only: the celestial pole traces a 47° circle across the millennia.</p>
+        <p><strong>12-sign horoscope vs 13 constellations.</strong> Horoscope signs are fixed to the seasons (tropical): Aries always begins at the March equinox. The actual constellations along the ecliptic have drifted since the zodiac was defined roughly 2,000 years ago, and the Sun also passes through <strong>Ophiuchus</strong> (the Serpent-bearer, between Scorpius and Sagittarius) — the 13th constellation astronomers note on the ecliptic. Your horoscope sign is a seasonal marker, not the constellation physically behind the Sun on your birthday.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>Sun, Stars &amp; Horoscope</h4>
+        <p class="muted" style="font-size:0.9rem">Interactive Earth–Sun model, zodiac wheel, leading stars, precession and the 13th constellation.</p>
+      </div>
+      <div>
+        <h4>Features</h4>
+        <ul>
+          <li><a href="index.html">Weather Forecast</a></li>
+          <li><a href="calendars.html">World Calendars</a></li>
+          <li><a href="ethiopian.html">Ethiopian Calendar</a></li>
+          <li><a href="timezones.html">Time Zones</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Sky guide</h4>
+        <ul>
+          <li>Ecliptic &amp; zodiac</li>
+          <li>Axial precession</li>
+          <li>Leading stars</li>
+          <li>Ophiuchus (13th)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="footer-year"></span> Global Weather Forecast &amp; Calendars</span>
+      <span>Educational visualization — not an astronomical instrument.</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
