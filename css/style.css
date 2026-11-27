@@ -551,3 +551,34 @@ body::before {
   .stat-row { grid-template-columns: 1fr; }
   .hero-glow { display: none; }
 }
+
+/* ===== Ad Placements (Adsterra) ===== */
+.ad-wrap {
+  margin: 1.5rem auto;
+  text-align: center;
+  min-height: 90px;
+}
+.ad-wrap.desktop-only { display: block; }
+.ad-wrap.mobile-only { display: none; }
+.ad-wrap .ad-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+  display: block;
+}
+.ad-wrap iframe, .ad-wrap ins, .ad-wrap div[id^="container-"] {
+  margin: 0 auto;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .ad-wrap.desktop-only { display: none !important; }
+  .ad-wrap.mobile-only { display: block !important; }
+  .ad-wrap.mobile-only iframe,
+  .ad-wrap.mobile-only div[id^="container-"] {
+    max-width: 100%;
+    width: 100%;
+  }
+}
