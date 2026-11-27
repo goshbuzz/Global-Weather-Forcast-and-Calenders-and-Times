@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Global Weather Forecast & World Calendars</title>
+<meta name="description" content="Get in touch with Global Weather Forecast & World Calendars. Questions about weather data, calendar conversions, time zones, or the Sun & stars visualization.">
+<meta name="keywords" content="contact, weather forecast, world calendars, time zones, support, Open-Meteo, Ethiopian calendar">
+<meta name="author" content="Global Weather Forecast & Calendars">
+<link rel="canonical" href="https://goshbuzz.github.io/Global-Weather-Focast-and-Calenders-and-Times/contact.html">
+<meta property="og:title" content="Contact — Global Weather Forecast & World Calendars">
+<meta property="og:description" content="Get in touch with Global Weather Forecast & World Calendars.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://goshbuzz.github.io/Global-Weather-Focast-and-Calenders-and-Times/contact.html">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="css/style.css">
+<script defer src="js/ui.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Global Weather Forecast & World Calendars",
+  "url": "https://goshbuzz.github.io/Global-Weather-Focast-and-Calenders-and-Times/",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service",
+    "availableInMultipleLanguages": true
+  }
+}
+</script>
+<script defer>
+window.addEventListener("DOMContentLoaded", () => {
+  NavUI.init();
+  setFooterYear();
+  initReveals();
+
+  const form = document.getElementById("contact-form");
+  const msg = document.getElementById("form-msg");
+  const toast = document.getElementById("toast");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = form.querySelector('button[type="submit"]');
+    const orig = btn.textContent;
+    btn.textContent = "Sending…";
+    btn.disabled = true;
+    msg.textContent = "";
+
+    const payload = {
+      name: form.elements.name.value.trim(),
+      email: form.elements.email.value.trim(),
+      subject: form.elements.subject.value.trim(),
+      message: form.elements.message.value.trim(),
+    };
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+
+      if (res.ok && data.ok) {
+        msg.textContent = "Thanks — your message has been received!";
+        msg.className = "form-msg ok";
+        form.reset();
+        showToast("Message sent");
+      } else {
+        msg.textContent = (data && data.error) || "Unable to send. Please try again.";
+        msg.className = "form-msg err";
+      }
+    } catch (err) {
+      msg.textContent = "Network error — please try again later.";
+      msg.className = "form-msg err";
+    } finally {
+      btn.textContent = orig;
+      btn.disabled = false;
+    }
+  });
+
+  // Lightweight pageview analytics (privacy-friendly)
+  try {
+    const screen = `${window.screen.width}x${window.screen.height}`;
+    fetch("/api/analytics", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        page: window.location.pathname,
+        referrer: document.referrer,
+        timestamp: new Date().toISOString(),
+        screen,
+        lang: navigator.language,
+      }),
+    }).catch(() => {}); // never block the UI
+  } catch (e) {}
+
+  function showToast(text) {
+    const t = toast;
+    t.querySelector(".title").textContent = text;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 4000);
+  }
+});
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-wrap">
+    <a class="brand" href="index.html"><span class="mark">✉️</span>Contact<span>Us</span></a>
+    <nav>
+      <ul class="nav-list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="calendars.html">World Calendars</a></li>
+        <li><a href="ethiopian.html">Ethiopian 13-Month Calendar</a></li>
+        <li><a href="timezones.html">World Time Zones</a></li>
+        <li><a href="cosmos.html">Sun, Stars & Horoscope</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="contact.html" style="color:var(--sky)">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobile-nav">
+    <div class="panel-head"><strong style="color:var(--accent)">Contact</strong><button class="close-btn" id="nav-close">✕</button></div>
+    <ul>
+      <li><a href="index.html">Home & Weather</a></li>
+      <li><a href="calendars.html">World Calendars</a></li>
+      <li><a href="ethiopian.html">Ethiopian 13-Month Calendar</a></li>
+      <li><a href="timezones.html">World Time Zones</a></li>
+      <li><a href="cosmos.html">Sun, Stars & Horoscope</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+  <div class="nav-backdrop" id="nav-backdrop"></div>
+</header>
+
+<main>
+  <section class="page reveal">
+    <div class="section-head text-center">
+      <span class="kicker">Get in touch</span>
+      <h2>Contact Us</h2>
+      <p>Questions about Open-Meteo weather data, calendar conversions, time zones, or the Sun & stars visualization? Drop us a line.</p>
+    </div>
+
+    <div class="contact-wrap">
+      <div class="glass panel reveal" style="animation-delay:100ms">
+        <form id="contact-form" class="contact-form" novalidate>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+            <input name="name" type="text" placeholder="Your name" required autocomplete="name">
+            <input name="email" type="email" placeholder="Email address" required autocomplete="email">
+          </div>
+          <input name="subject" type="text" placeholder="Subject" autocomplete="off">
+          <textarea name="message" placeholder="How can we help you?" required></textarea>
+          <button type="submit" class="btn-primary">Send message</button>
+          <div id="form-msg" class="form-msg"></div>
+        </form>
+      </div>
+    </div>
+
+    <div class="stat-row reveal" style="animation-delay:200ms">
+      <div class="stat-card"><span class="value">12+</span><span class="label">calendar systems</span></div>
+      <div class="stat-card"><span class="value">24/7</span><span class="label">live weather & time zones</span></div>
+      <div class="stat-card"><span class="value">0</span><span class="label">API key needed (demo)</span></div>
+    </div>
+
+    <div class="reveal" style="animation-delay:300ms; margin-top:2rem">
+      <h3 style="margin-bottom:1rem">Quick links</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:0.75rem">
+        <a href="index.html" class="btn-ghost">Live Weather</a>
+        <a href="calendars.html" class="btn-ghost">World Calendars</a>
+        <a href="ethiopian.html" class="btn-ghost">Ethiopian Calendar</a>
+        <a href="timezones.html" class="btn-ghost">Time Zones</a>
+        <a href="cosmos.html" class="btn-ghost">Sun & Stars</a>
+        <a href="faq.html" class="btn-ghost">FAQ</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast"><div class="title">Message sent</div><div class="muted" style="font-size:0.8rem">We’ll get back to you soon.</div></div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>Global Weather &amp; Calendars</h4>
+        <p class="muted" style="font-size:0.9rem">Live forecasts via Open-Meteo · World calendars · Time zones · Solar-system visualization.</p>
+      </div>
+      <div>
+        <h4>Features</h4>
+        <ul>
+          <li><a href="index.html">Weather Forecast</a></li>
+          <li><a href="calendars.html">World Calendars</a></li>
+          <li><a href="ethiopian.html">Ethiopian Calendar</a></li>
+          <li><a href="timezones.html">Time Zones</a></li>
+          <li><a href="cosmos.html">Sun &amp; Stars</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="contact.html">Send a message</a></li>
+          <li><a href="faq.html">Read the FAQ</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="footer-year"></span> Global Weather Forecast &amp; Calendars</span>
+      <span>Messages handled via Vercel serverless function.</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

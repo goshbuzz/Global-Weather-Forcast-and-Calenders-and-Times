@@ -23,6 +23,24 @@ function setFooterYear() {
   if (el) el.textContent = new Date().getFullYear();
 }
 
+function initReveals() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: "0px 0px -60px 0px" });
+  document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+}
+
+if (typeof window !== "undefined") {
+  window.NavUI = NavUI;
+  window.setFooterYear = setFooterYear;
+  window.initReveals = initReveals;
+}
+
 if (typeof window !== "undefined") {
   window.NavUI = NavUI;
   window.setFooterYear = setFooterYear;

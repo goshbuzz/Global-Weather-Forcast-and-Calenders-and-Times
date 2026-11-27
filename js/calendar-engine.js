@@ -382,6 +382,79 @@ const CalendarEngine = (() => {
       monthEn: COPTIC_MONTHS[eth.m - 1] };
   }
 
+  /* ---------------- Buddhist / Thai calendar ---------------- */
+  // Buddhist Era (BE) = CE + 543. Month structure mirrors Gregorian;
+  // Songkran (Thai New Year, 13–15 Apr) is the cultural anchor.
+  const BUDDHIST_MONTHS_EN = [
+    "January","February","March","April","May","June",
+    "July","August","September","October","November","December"];
+  const BUDDHIST_MONTHS_TH = [
+    "มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน",
+    "กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
+  function gregorianToBuddhist(y, m, d) {
+    return { system: "buddhist", year: y + 543, month: m, day: d,
+      monthEn: BUDDHIST_MONTHS_EN[m - 1], monthTh: BUDDHIST_MONTHS_TH[m - 1],
+      era: "BE" };
+  }
+
+  /* ---------------- Japanese era calendar ---------------- */
+  const JAPANESE_ERAS = [
+    { name: "Reiwa", ja: "令和", start: { y: 2019, m: 5, d: 1 } },
+    { name: "Heisei", ja: "平成", start: { y: 1989, m: 1, d: 8 } },
+    { name: "Showa", ja: "昭和", start: { y: 1926, m: 12, d: 25 } },
+    { name: "Taisho", ja: "大正", start: { y: 1912, m: 7, d: 30 } },
+    { name: "Meiji", ja: "明治", start: { y: 1868, m: 9, d: 8 } }];
+  const JAPANESE_MONTHS = [
+    "January","February","March","April","May","June",
+    "July","August","September","October","November","December"];
+  function gregorianToJapanese(y, m, d) {
+    let era = JAPANESE_ERAS[0];
+    for (const e of JAPANESE_ERAS) {
+      const sy = e.start.y, sm = e.start.m, sd = e.start.d;
+      if (y > sy || (y === sy && (m > sm || (m === sm && d >= sd)))) { era = e; break; }
+    }
+    const ey = y - era.start.y + 1;
+    return { system: "japanese", year: ey, eraName: era.name, eraJa: era.ja,
+      month: m, day: d, monthEn: JAPANESE_MONTHS[m - 1] };
+  }
+
+  /* ---------------- Vietnamese calendar (lunisolar, approx.) ---------------- */
+  // Approximates the Vietnamese lunisolar calendar using the same lunation
+  // math as the Chinese calendar, with Vietnamese month names & zodiac.
+  const VIETNAMESE_MONTHS = [
+    "Giêng","Tháng Hai","Tháng Ba","Tháng Tư","Tháng Năm","Tháng Sáu",
+    "Tháng Bảy","Tháng Tám","Tháng Chín","Tháng Mười","Tháng Mười Một","Tháng Ch"];
+  const VIETNAMESE_ZODIAC = ["Tý","Sửu","Dần","Mão","Thìn","Tỵ","Ngọ","Mùi","Thân","Dậu","Tuất","Hợi"];
+  function gregorianToVietnamese(y, m, d) {
+    const chi = CE.chineseData ? chineseData(y, m, d) : null;
+    // Fallback computed inline if chineseData not yet defined (it is, above)
+    const jd = Math.floor(Astro.toJD(y, m, d));
+    const sol = Math.floor(Astro.solarTermJD(270, y));
+    const baseSol = sol > jd ? Math.floor(Astro.solarTermJD(270, y - 1)) : sol;
+    let nm1 = Math.floor(Astro.newMoonNear(baseSol + 1));
+    if (nm1 <= baseSol) nm1 = Math.floor(Astro.newMoonNear(nm1 + 29));
+    let nm2 = Math.floor(Astro.newMoonNear(nm1 + 29));
+    let cny = nm2; let cy = y;
+    if (cny > jd) {
+      const s2 = Math.floor(Astro.solarTermJD(270, y - 1));
+      let a = Math.floor(Astro.newMoonNear(s2 + 1));
+      if (a <= s2) a = Math.floor(Astro.newMoonNear(a + 29));
+      cny = Math.floor(Astro.newMoonNear(a + 29)); cy = y - 1;
+    }
+    let cursor = cny; let monthNo = 1;
+    while (true) {
+      const nextNm = Math.floor(Astro.newMoonNear(cursor + 29));
+      if (nextNm > jd) break;
+      cursor = nextNm; monthNo++;
+    }
+    const animal = VIETNAMESE_ZODIAC[(cy - 2020) % 12];
+    const can = ["Giáp","Ất","Bính","Đinh","Mậu","Kỷ","Canh","Tân","Nhâm","Quý"][
+      ((cy - 1984) % 10 + 10) % 10];
+    return { system: "vietnamese", year: cy, can, chi: animal,
+      month: monthNo, monthVi: VIETNAMESE_MONTHS[(monthNo - 1) % 12],
+      day: jd - cursor + 1, cnyGregorian: Astro.jdToGregorian(cny) };
+  }
+
   /* ---------------- Mayan ---------------- */
   const MAYAN_TZOLKIN = [
     "Imix'","Ik'","Ak'bal","K'an","Chicchan","Cimi","Manik'","Lamat",
@@ -421,9 +494,12 @@ const CalendarEngine = (() => {
     HINDU_MONTHS_EN, HINDU_MONTHS_HI, TITHI_NAMES, NAKSHATRAS, YOGAS,
     PUNJABI_MONTHS, HIJRI_MONTHS, HIJRI_MONTHS_AR, HEBREW_MONTHS, HEBREW_MONTHS_HE,
     PERSIAN_MONTHS, COPTIC_MONTHS,
+    BUDDHIST_MONTHS_EN, BUDDHIST_MONTHS_TH, JAPANESE_ERAS, JAPANESE_MONTHS,
+    VIETNAMESE_MONTHS, VIETNAMESE_ZODIAC,
     gregorianToEthiopian, ethiopianToGregorian,
     chineseData, hinduData, punjabiData,
     gregorianToHijri, gregorianToHebrew, gregorianToPersian,
+    gregorianToBuddhist, gregorianToJapanese, gregorianToVietnamese,
     gregorianToJulian, gregorianToCoptic, gregorianToMayan,
     ethDaysInYear, ethMonthDays,
     solarTerms: Astro.SOLAR_TERMS,
