@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Time Zones — All Countries, Live Clocks & 33rd Parallel</title>
+<meta name="description"content="Current time in every IANA time zone worldwide with UTC offsets and daylight saving status. Includes live clocks for cities on the 33rd parallel north: Casablanca, Algiers, Beirut, Baghdad, Phoenix, Dallas, Atlanta and more.">
+<meta name="keywords"content="world time zones, current time all countries, IANA time zones, UTC offset, 33rd parallel, world clock, time zone converter, daylight saving time">
+<meta name="author" content="Global Weather Forecast & Calendars">
+<link rel="canonical" href="https://goshbuzz.github.io/Global-Weather-Focast-and-Calenders-and-Times/timezones.html">
+<meta property="og:title" content="World Time Zones — Live Clocks for Every Country">
+<meta property="og:description" content="Current time in all IANA time zones with offsets and DST status, plus live clocks for cities along the 33rd parallel north.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://goshbuzz.github.io/Global-Weather-Focast-and-Calenders-and-Times/timezones.html">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="css/style.css">
+<script defer src="js/timezones.js"></script>
+<script defer src="js/ui.js"></script>
+<script defer>
+window.addEventListener("DOMContentLoaded", () => {
+  NavUI.init();
+  setFooterYear();
+  // local time chip
+  const chip = document.getElementById("local-chip");
+  const update = () => {
+    chip.textContent = new Date().toLocaleString(undefined, { weekday: "short", year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", timeZoneName: "short" });
+  };
+  update(); setInterval(update, 1000);
+  TimeZoneUI.init({
+    tableBody: document.getElementById("tz-body"),
+    searchInput: document.getElementById("tz-search")
+  });
+  const t33 = new TimeZone33UI(document.getElementById("parallel33"));
+  t33.render();
+});
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-wrap">
+    <a class="brand" href="index.html"><span class="mark">🕐</span>World<span>Times</span></a>
+    <nav>
+      <ul class="nav-list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="calendars.html">World Calendars</a></li>
+        <li><a href="ethiopian.html">Ethiopian 13-Month Calendar</a></li>
+        <li><a href="timezones.html" style="color:var(--sky)">World Time Zones</a></li>
+        <li><a href="cosmos.html">Sun, Stars & Horoscope</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobile-nav">
+    <div class="panel-head"><strong style="color:var(--accent)">World Times</strong><button class="close-btn" id="nav-close">✕</button></div>
+    <ul>
+      <li><a href="index.html">Home & Weather</a></li>
+      <li><a href="calendars.html">World Calendars</a></li>
+      <li><a href="ethiopian.html">Ethiopian 13-Month Calendar</a></li>
+      <li><a href="timezones.html">World Time Zones</a></li>
+      <li><a href="cosmos.html">Sun, Stars & Horoscope</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+    </ul>
+  </div>
+  <div class="nav-backdrop" id="nav-backdrop"></div>
+</header>
+
+<main>
+  <section class="page">
+    <div class="section-head">
+      <span class="kicker">🕐 All time zones · live</span>
+      <h2>Time Zones of the World</h2>
+      <p>Live local time, date, UTC offset and daylight-saving status for every IANA time zone. Your local time: <strong id="local-chip" style="color:var(--accent)">…</strong></p>
+    </div>
+
+    <div class="tz-controls">
+      <input type="text" id="tz-search" placeholder="Search zone, country or city (e.g. Kolkata, Cairo, Tokyo…)">
+      <span class="chip">Updated every second</span>
+      <span class="chip muted">Source: IANA time zone database via browser Intl API</span>
+    </div>
+
+    <div class="tz-table-wrap" style="margin-top:0">
+      <table class="tz-table">
+        <thead><tr><th>Time zone</th><th>Local time · date</th><th>UTC offset</th></tr></thead>
+        <tbody id="tz-body"></tbody>
+      </table>
+    </div>
+    <p class="muted text-center" style="margin-top:0.75rem">Zone list from your browser's IANA database (Intl.supportedValuesOf("timeZone")). Search to filter.</p>
+
+    <!-- 33rd parallel -->
+    <div class="section" style="margin-top:3rem">
+      <div id="parallel33"></div>
+    </div>
+
+    <div class="disclaimer" style="margin-top:2rem">
+      <strong>Why time zones exist.</strong> On a rotating globe, the Sun illuminates only one half of Earth at a time, so local noon arrives at different longitudes at different moments — hence 24-ish time zones (some with 30- or 45-minute offsets, plus DST rules). <strong>Flat-earth perspectives</strong> reject the globe model and offer alternative explanations for day/night cycles and the 33rd parallel; this site shows live clock data derived from the standard globe-based IANA system, alongside the 33rd parallel city times, so both views can be compared side by side. Offsets reflect political decisions and can change — verify critical times with local authorities.
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>World Time Zones</h4>
+        <p class="muted" style="font-size:0.9rem">Live clocks for all IANA zones, UTC offsets, DST flags, and the 33rd parallel north.</p>
+      </div>
+      <div>
+        <h4>Features</h4>
+        <ul>
+          <li><a href="index.html">Weather Forecast</a></li>
+          <li><a href="calendars.html">World Calendars</a></li>
+          <li><a href="ethiopian.html">Ethiopian Calendar</a></li>
+          <li><a href="cosmos.html">Sun &amp; Stars</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Zones</h4>
+        <ul>
+          <li><a href="timezones.html">All countries</a></li>
+          <li><a href="timezones.html">33rd parallel</a></li>
+          <li><a href="cosmos.html">Sun path</a></li>
+          <li><a href="faq.html">Time FAQs</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="footer-year"></span> Global Weather Forecast &amp; Calendars</span>
+      <span>Verify critical times locally.</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

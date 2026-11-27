@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Calendars — Gregorian, Chinese, Hindu, Punjabi, Ethiopian 13-Month & More</title>
+<meta name="description" content="Convert any Gregorian date into world calendars: Chinese, Hindu (Vedic), Punjabi Desi & Nanakshahi, Hijri, Hebrew, Persian, Julian, Coptic, Mayan and the Ethiopian 13-month calendar. Side-by-side comparison for every date.">
+<meta name="keywords" content="world calendar converter, Gregorian calendar, Ethiopian 13 month calendar, Chinese calendar, Hindu calendar, Punjabi calendar, Hijri calendar, Hebrew calendar, Persian calendar, Mayan calendar, date converter, all cultures calendar">
+<meta name="author" content="Global Weather Forecast & Calendars">
+<link rel="canonical" href="https://goshbuzz.github.io/Global-Weather-Focast-and-Calenders-and-Times/calendars.html">
+<meta property="og:title" content="World Calendars — All Cultures in One Converter">
+<meta property="og:description" content="Convert any date across Gregorian, Chinese, Hindu, Punjabi, Ethiopian 13-month, Hijri, Hebrew, Persian, Julian, Coptic and Mayan calendars.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://goshbuzz.github.io/Global-Weather-Focast-and-Calenders-and-Times/calendars.html">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="css/style.css">
+<script defer src="js/astro.js"></script>
+<script defer src="js/calendar-engine.js"></script>
+<script defer src="js/ui.js"></script>
+<script defer>
+window.addEventListener("DOMContentLoaded", () => {
+  NavUI.init();
+  setFooterYear();
+  const CE = CalendarEngine;
+  const dateInput = document.getElementById("cal-date");
+  const todayBtn = document.getElementById("cal-today");
+  const cards = document.getElementById("cal-cards");
+  const today = new Date();
+  const iso = today.toISOString().slice(0, 10);
+  dateInput.value = iso;
+
+  function weekdayName(y, m, d) {
+    return new Date(y, m - 1, d).toLocaleDateString(undefined, { weekday: "long" });
+  }
+
+  function numberWithOrdinal(n) {
+    return n;
+  }
+
+  function renderAll(y, m, d) {
+    const greg = { y, m, d, weekday: weekdayName(y, m, d) };
+    const eth = CE.gregorianToEthiopian(y, m, d);
+    const chi = CE.chineseData(y, m, d);
+    const hin = CE.hinduData(y, m, d);
+    const pun = CE.punjabiData(y, m, d);
+    const hij = CE.gregorianToHijri(y, m, d);
+    const heb = CE.gregorianToHebrew(y, m, d);
+    const per = CE.gregorianToPersian(y, m, d);
+    const jul = CE.gregorianToJulian(y, m, d);
+    const cop = CE.gregorianToCoptic(y, m, d);
+    const may = CE.gregorianToMayan(y, m, d);
+
+    const ethName = CE.ETH_MONTHS[eth.m - 1];
+    const chiName = CE.CHINESE_MONTHS[chi.month - 1] || `Month ${chi.month}`;
+    const hinNameEn = CE.HINDU_MONTHS_EN[hin.month];
+    const hinNameHi = CE.HINDU_MONTHS_HI[hin.month];
+    const punName = PUNJABI_LABELS[pun.month - 1] || pun.month;
+
+    cards.innerHTML = `
+      <div class="cal-card" style="border-top:4px solid var(--sky)">
+        <div class="sys">Gregorian (civil, worldwide)</div>
+        <div class="name">${greg.weekday}, ${d} ${CE.GREG_MONTHS[m - 1]} ${y}</div>
+        <div class="sub">ISO 8601 week · global civil standard</div>
+        <div class="meta">Date: ${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")} · Day of year: ${Math.floor((new Date(y,m,d) - new Date(y,0,0))/86400000) + 1}</div>
+      </div>
+      <div class="cal-card" style="border-top:4px solid var(--accent)">
+        <div class="sys">Ethiopian (ኢትዮጵያ) — 13 months</div>
+        <div class="name">${eth.d} ${ethName.en} <span style="font-size:0.9rem;color:var(--muted)">(${ethName.geez})</span></div>
+        <div class="sub">Year ${eth.y} · ${eth.m === 13 ? "Pagumē (5–6 days)" : "30-day month"}</div>
+        <div class="meta">Runs ~7–8 years behind Gregorian · New Year (Enkutatash) ≈ 11 Sep</div>
+      </div>
+        <div class="cal-card" style="border-top:4px solid var(--earth)">
+        <div class="sys">Chinese (lunisolar, approximate)</div>
+        <div class="name">${chi.year} · ${chi.gz} ${chi.animal}</div>
+        <div class="sub">${chiName}, day ${chi.day}${chi.leap ? ` · Leap ${chi.leapOf} month` : ""}</div>
+        <div class="meta">Zodiac: ${chi.animal} · CNY ${chi.cnyGregorian.year}-${String(chi.cnyGregorian.month).padStart(2,"0")}-${String(chi.cnyGregorian.day).padStart(2,"0")}</div>
+      </div>
+      <div class="cal-card" style="border-top:4px solid var(--sky)">
+        <div class="sys">Hindu / Vedic (Hindi) — Pañcāṅga (approx.)</div>
+        <div class="name">${hin.tithiName} · ${hin.paksha} Paksha</div>
+        <div class="sub">${hinNameHi} <span style="font-size:0.85rem;color:var(--muted)">(${hinNameEn})</span> · Vikram Samvat ${hin.year} / Shaka ${hin.shaka}</div>
+        <div class="meta">Tithi ${hin.tithiDay} · Nakshatra ${hin.nakshatra} · Yoga ${hin.yoga} · Karana ${hin.karana}</div>
+      </div>
+      <div class="cal-card" style="border-top:4px solid var(--leaf)">
+        <div class="sys">Punjabi — Desi (Bikrami) &amp; Nanakshahi</div>
+        <div class="name">${pun.day} ${punName} <span style="font-size:0.9rem;color:var(--muted)">(${pun.monthGu})</span></div>
+        <div class="sub">Bikrami year ${pun.bikrami} · Nanakshahi ${pun.nanakshahiYear}</div>
+        <div class="meta">Solar sankranti months · day ${pun.day} of solar month</div>
+      </div>
+      <div class="cal-card" style="border-top:4px solid var(--ruby)">
+        <div class="sys">Islamic Hijri (arithmetic approx.)</div>
+        <div class="name">${hij.day} ${hij.monthEn} <span style="font-size:0.9rem;color:var(--muted)">(${hij.monthAr})</span></div>
+        <div class="sub">${hij.ah} · Lunar year ≈ 354 days</div>
+        <div class="meta">Dates shift ~11 days earlier each Gregorian year</div>
+      </div>
+      <div class="cal-card" style="border-top:4px solid var(--ruby)">
+        <div class="sys">Hebrew (molad approx.)</div>
+        <div class="name">Year ${heb.year} AM</div>
+        <div class="sub">${heb.note}</div>
+        <div class="meta">Verify with a Hebrew calendar authority</div>
+      </div>
+      <div class="cal-card" style="border-top:4px solid var(--sky)">
+        <div class="sys">Persian / Solar Hijri (approx.)</div>
+        <div class="name">${per.day} ${per.monthEn} ${per.year} AP</div>
+        <div class="sub">Vernal-equinox based · ${per.leap ? "leap year (Esfand 30)" : "common year"}</div>
+        <div class="meta">Official calendar of Iran &amp; Afghanistan</div>
+      </div>
+      <div class="cal-card" style="border-top:4px solid var(--muted)">
+        <div class="sys">Julian (Old Style)</div>
+        <div class="name">${jul.d} ${CE.GREG_MONTHS[jul.m - 1]} ${jul.y}</div>
+        <div class="sub">Gregorian − ${jul.offset} days (1900–2099)</div>
+        <div class="meta">Still used by parts of the Orthodox Church</div>
+      </div>
+      <div class="cal-card" style="border-top:4px solid var(--muted)">
+        <div class="sys">Coptic / Egyptian (fixed 365 days)</div>
+        <div class="name">${cop.day} ${cop.monthEn} ${cop.year}</div>
+        <div class="sub">13 months · Coptic year = Ethiopian year − 24</div>
+        <div class="meta">No leap rule; drifts one day per 4 years</div>
+      </div>
+      <div class="cal-card" style="border-top:4px solid var(--muted)">
+        <div class="sys">Mayan (GMT correlation)</div>
+        <div class="name">${may.longCount}</div>
+        <div class="sub">${may.tzolkin} · ${may.haab}</div>
+        <div class="meta">Tzolkʼin 260-day cycle · Haabʼ 365-day cycle</div>
+      </div>
+    `;
+  }
+
+  const PUNJABI_LABELS = CE.PUNJABI_MONTHS.map(x => x.en);
+  renderAll(today.getFullYear(), today.getMonth() + 1, today.getDate());
+
+  dateInput.addEventListener("change", (e) => {
+    const [y, m, d] = e.target.value.split("-").map(Number);
+    renderAll(y, m, d);
+  });
+  todayBtn.addEventListener("click", () => {
+    const now = new Date();
+    dateInput.value = now.toISOString().slice(0, 10);
+    renderAll(now.getFullYear(), now.getMonth() + 1, now.getDate());
+  });
+
+  // Gregorian month grid
+  const monthTable = document.getElementById("cal-month");
+  function drawGregMonth(y, m) {
+    const first = new Date(y, m - 1, 1);
+    const last = new Date(y, m, 0);
+    const startDay = first.getDay(); // Sun=0
+    const order = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+    let html = `<thead><tr>${order.map(w => `<th>${w}</th>`).join("")}</tr></thead><tbody>`;
+    let day = 1;
+    let cell = 0;
+    const todayStr = new Date().toISOString().slice(0,10);
+    for (let r = 0; r < 6 && day <= last.getDate(); r++) {
+      html += "<tr>";
+      for (let c = 0; c < 7; c++) {
+        cell++;
+        if ((r === 0 && c < startDay) || day > last.getDate()) {
+          html += "<td></td>";
+        } else {
+          const iso2 = `${y}-${String(m).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+          const isToday = iso2 === todayStr;
+          const eth = CE.gregorianToEthiopian(y, m, day);
+          html += `<td class="${isToday ? "today" : ""}" title="${eth.d} ${CE.ETH_MONTHS[eth.m - 1].en} ${eth.y}">${day}</td>`;
+          day++;
+        }
+      }
+      html += "</tr>";
+    }
+    html += "</tbody>";
+    monthTable.innerHTML = html;
+    document.getElementById("greg-month-label").textContent = `${CE.GREG_MONTHS[m - 1]} ${y}`;
+  }
+  drawGregMonth(today.getFullYear(), today.getMonth() + 1);
+
+  // Ethiopian 13-month mini view
+  const ethView = document.getElementById("eth-months");
+  function drawEthiopianMonths(y, m, d) {
+    const eth = CE.gregorianToEthiopian(y, m, d);
+    let html = "";
+    for (let mi = 0; mi < 13; mi++) {
+      const days = CE.ethMonthDays(eth.y, mi);
+      const name = CE.ETH_MONTHS[mi];
+      const current = mi === eth.m - 1;
+      html += `<div class="cal-card" style="padding:0.75rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+          <div style="font-weight:800">${mi + 1}. ${name.en}</div>
+          <div style="font-size:0.75rem;color:var(--muted)">${current ? "current month" : ""} ${days} days</div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:3px">
+          ${Array.from({ length: days }, (_, i) => {
+            const dd = i + 1;
+            const isCur = current && dd === eth.d;
+            return `<span style="display:inline-block;width:24px;height:24px;line-height:24px;border-radius:4px;text-align:center;font-size:0.75rem;${isCur ? "background:var(--accent);color:#000;font-weight:800" : "color:var(--text-dim);border:1px solid var(--border)"}">${dd}</span>`;
+          }).join("")}
+        </div>
+      </div>`;
+    }
+    ethView.innerHTML = html;
+  }
+  drawEthiopianMonths(today.getFullYear(), today.getMonth() + 1, today.getDate());
+
+  document.getElementById("cal-month-nav").innerHTML = `
+    <button class="btn-ghost" id="prev-m">‹</button>
+    <span id="greg-month-label" style="font-weight:800;margin:0 1rem"></span>
+    <button class="btn-ghost" id="next-m">›</button>
+  `;
+  let gY = today.getFullYear(), gM = today.getMonth() + 1;
+  document.getElementById("prev-m").onclick = () => { gM--; if (gM < 1) { gM = 12; gY--; } drawGregMonth(gY, gM); };
+  document.getElementById("next-m").onclick = () => { gM++; if (gM > 12) { gM = 1; gY++ } drawGregMonth(gY, gM); };
+});
+</script>
+<style>
+.cal-month-grid td { cursor: default; }
+.cal-month-grid td:empty { background: transparent; border: none; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-wrap">
+    <a class="brand" href="index.html"><span class="mark">📅</span>Global<span>Calendars</span></a>
+    <nav>
+      <ul class="nav-list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="calendars.html" style="color:var(--sky)">World Calendars</a></li>
+        <li><a href="ethiopian.html">Ethiopian 13-Month Calendar</a></li>
+        <li><a href="timezones.html">World Time Zones</a></li>
+        <li><a href="cosmos.html">Sun, Stars & Horoscope</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobile-nav">
+    <div class="panel-head"><strong style="color:var(--accent)">Global Calendars</strong><button class="close-btn" id="nav-close">✕</button></div>
+    <ul>
+      <li><a href="index.html">Home & Weather</a></li>
+      <li><a href="calendars.html">World Calendars</a></li>
+      <li><a href="ethiopian.html">Ethiopian 13-Month Calendar</a></li>
+      <li><a href="timezones.html">World Time Zones</a></li>
+      <li><a href="cosmos.html">Sun, Stars & Horoscope</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+    </ul>
+  </div>
+  <div class="nav-backdrop" id="nav-backdrop"></div>
+</header>
+
+<main>
+  <section class="page">
+    <div class="section-head">
+      <span class="kicker">All world calendars · one date</span>
+      <h2>World Calendar Converter</h2>
+      <p>Pick any Gregorian date and see it rendered in Gregorian, Chinese, Hindu (Vedic), Punjabi, Ethiopian 13-month, Hijri, Hebrew, Persian, Julian, Coptic and Mayan systems. Non-Gregorian systems are astronomical approximations — verify religious dates locally.</p>
+    </div>
+
+    <div class="cal-nav">
+      <label style="font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted)">Gregorian date</label>
+      <input type="date" id="cal-date">
+      <button class="btn-primary" id="cal-today">Today</button>
+    </div>
+
+    <div class="cal-grid" id="cal-cards"></div>
+
+    <!-- Gregorian month view -->
+    <div class="section" style="margin-top:2.5rem">
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+          <h3 style="margin:0">Gregorian month view <span id="greg-month-label" style="font-weight:400;font-size:1rem"></span></h3>
+          <div id="cal-month-nav"></div>
+        </div>
+        <table class="cal-month-grid" id="cal-month"></table>
+      </div>
+    </div>
+
+    <!-- Ethiopian 13-month view -->
+    <div class="section">
+      <div class="panel">
+        <h3 style="margin-bottom:1rem">Ethiopian 13-month calendar (current month)</h3>
+        <p class="muted" style="margin-bottom:1rem">12 months × 30 days + Pagumē (5 days, 6 in leap years). The current day is highlighted in amber.</p>
+        <div id="eth-months" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.75rem"></div>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      <strong>Accuracy notice.</strong> Gregorian dates are exact. Chinese, Hindu/Vedic, Punjabi, Hijri, Hebrew, Persian, Julian, Coptic and Mayan conversions use published approximate algorithms and are intended for cultural/educational comparison. Lunar calendars (Hijri, Hebrew, Hindu) depend on moon sighting and local tradition — always confirm religious festivals with your community or religious authority. Ethiopian conversion uses the fixed 4-year leap rule with anchor 1 Mäskäräm 2016 = 11 September 2023.
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>Global Weather &amp; Calendars</h4>
+        <p class="muted" style="font-size:0.9rem">Live forecasts via Open-Meteo · World calendars · Time zones · Solar-system visualization.</p>
+      </div>
+      <div>
+        <h4>Features</h4>
+        <ul>
+          <li><a href="index.html">Weather Forecast</a></li>
+          <li><a href="calendars.html">World Calendars</a></li>
+          <li><a href="ethiopian.html">Ethiopian Calendar</a></li>
+          <li><a href="timezones.html">Time Zones</a></li>
+          <li><a href="cosmos.html">Sun &amp; Stars</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Calendars</h4>
+        <ul>
+          <li><a href="calendars.html">Gregorian</a></li>
+          <li><a href="calendars.html">Chinese</a></li>
+          <li><a href="calendars.html">Hindi / Vedic</a></li>
+          <li><a href="calendars.html">Punjabi</a></li>
+          <li><a href="ethiopian.html">Ethiopian 13-month</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="footer-year"></span> Global Weather Forecast &amp; Calendars</span>
+      <span>Verify religious dates with local authorities.</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

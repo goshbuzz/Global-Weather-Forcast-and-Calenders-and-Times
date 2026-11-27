@@ -1,0 +1,10 @@
+{
+  "name": "Global Weather Forecast & World Calendars",
+  "short_name": "Weather & Calendars",
+  "description": "Live Open-Meteo weather, all world calendars (Gregorian, Chinese, Hindu, Punjabi, Ethiopian 13-month, Hijri, Hebrew, Persian, Julian, Coptic, Mayan), world time zones, and an interactive Sun–Earth–stars visualization.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#070a14",
+  "theme_color": "#070a14",
+  "icons": []
+}

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ethiopian 13-Month Calendar — Converter vs Gregorian</title>
+<meta name="description" content="The Ethiopian calendar follows a 13-month year: 12 months of 30 days plus Pagumē (5–6 days). Convert Ethiopian dates to Gregorian, view any year, and compare month-by-month with the Gregorian calendar.">
+<meta name="keywords" content="Ethiopian calendar, 13 month calendar, Ethiopia calendar, Enkutatash, Pagume, Gregorian comparison, Ethiopian to Gregorian converter, Mäskäräm, Tikimt, Ethiopian New Year">
+<meta name="author" content="Global Weather Forecast & Calendars">
+<link rel="canonical" href="https://goshbuzz.github.io/Global-Weather-Focast-and-Calenders-and-Times/ethiopian.html">
+<meta property="og:title" content="Ethiopian 13-Month Calendar — Converter & Comparison">
+<meta property="og:description" content="Explore Ethiopia's 13-month calendar: 12 × 30 days plus Pagumē. Convert to/from Gregorian and compare side by side.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://goshbuzz.github.io/Global-Weather-Focast-and-Calenders-and-Times/ethiopian.html">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="css/style.css">
+<script defer src="js/astro.js"></script>
+<script defer src="js/calendar-engine.js"></script>
+<script defer src="js/ui.js"></script>
+<script defer>
+window.addEventListener("DOMContentLoaded", () => {
+  NavUI.init();
+  setFooterYear();
+  const CE = CalendarEngine;
+  const yearInput = document.getElementById("eth-year");
+  const grid = document.getElementById("eth-year-grid");
+  const comp = document.getElementById("comp-table");
+  const today = new Date();
+  const ethNow = CE.gregorianToEthiopian(today.getFullYear(), today.getMonth() + 1, today.getDate());
+  yearInput.value = ethNow.y;
+
+  function fmt(d) { return d.toISOString().slice(0, 10); }
+  const todayISO = fmt(today);
+
+  function renderYear(y) {
+    let html = "";
+    for (let mi = 0; mi < 13; mi++) {
+      const days = CE.ethMonthDays(y, mi);
+      const name = CE.ETH_MONTHS[mi];
+      const start = CE.ethiopianToGregorian(y, mi + 1, 1);
+      const end = CE.ethiopianToGregorian(y, mi + 1, days);
+      html += `
+        <div class="cal-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem">
+            <div>
+              <div style="font-weight:800">${mi + 1}. ${name.en}</div>
+              <div style="font-size:0.75rem;color:var(--muted)">${name.geez} · ${days} days · ${start.year}-${String(start.month).padStart(2,"0")}-${String(start.day).padStart(2,"0")} → ${end.year}-${String(end.month).padStart(2,"0")}-${String(end.day).padStart(2,"0")}</div>
+            </div>
+            <div style="font-size:0.8rem;color:var(--accent);font-weight:700">${mi === 12 ? "Pagumē" : "30 days"}</div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px">
+            ${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(w => `<div style="font-size:0.65rem;color:var(--muted);text-align:center;padding:2px">${w}</div>`).join("")}
+            ${Array.from({ length: days }, (_, i) => {
+              const dd = i + 1;
+              const g = CE.ethiopianToGregorian(y, mi + 1, dd);
+              const iso = `${g.year}-${String(g.month).padStart(2,"0")}-${String(g.day).padStart(2,"0")}`;
+              const isToday = iso === todayISO;
+              return `<span style="display:block;width:26px;height:26px;line-height:26px;border-radius:6px;text-align:center;font-size:0.8rem;${isToday ? "background:var(--accent);color:#000;font-weight:800" : "color:var(--text-dim);border:1px solid var(--border)"} title="${name.en} ${dd} ${y} = ${iso}">${dd}</span>`;
+            }).join("")}
+          </div>
+        </div>`;
+    }
+    grid.innerHTML = html;
+
+    // comparison table
+    let rows = "";
+    for (let mi = 0; mi < 13; mi++) {
+      const days = CE.ethMonthDays(y, mi);
+      const name = CE.ETH_MONTHS[mi];
+      const start = CE.ethiopianToGregorian(y, mi + 1, 1);
+      const end = CE.ethiopianToGregorian(y, mi + 1, days);
+      rows += `<tr>
+        <td><strong>${mi + 1}. ${name.en}</strong><br><span style="font-size:0.8rem;color:var(--muted)">${name.geez}</span></td>
+        <td>${days}</td>
+        <td>${fmtISO(start)}</td>
+        <td>${fmtISO(end)}</td>
+        <td><strong>${fmtISO(start)} → ${fmtISO(end)}</strong></td>
+      </tr>`;
+    }
+    comp.innerHTML = rows;
+    document.getElementById("eth-year-label").textContent = y;
+  }
+
+  function fmtISO(d) { return `${d.year}-${String(d.month).padStart(2,"0")}-${String(d.day).padStart(2,"0")}`; }
+
+  renderYear(ethNow.y);
+
+  yearInput.addEventListener("change", (e) => {
+    const y = parseInt(e.target.value, 10);
+    if (y >= 1 && y <= 2100) renderYear(y);
+  });
+
+  // single date converter mini
+  document.getElementById("conv-btn").addEventListener("click", () => {
+    const gy = parseInt(document.getElementById("conv-gy").value, 10);
+    const gm = parseInt(document.getElementById("conv-gm").value, 10);
+    const gd = parseInt(document.getElementById("conv-gd").value, 10);
+    if (!gy || !gm || !gd) return;
+    const e = CE.gregorianToEthiopian(gy, gm, gd);
+    const out = document.getElementById("conv-out");
+    out.innerHTML = `<strong>${gd} ${CalendarEngine.GREG_MONTHS[gm-1]} ${gy}</strong> = Ethiopian <strong>${e.d} ${CE.ETH_MONTHS[e.m - 1].en} ${e.y}</strong> (${CE.ETH_MONTHS[e.m - 1].geez})`;
+  });
+});
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-wrap">
+    <a class="brand" href="index.html"><span class="mark">🌙</span>Ethiopian<span>Calendar</span></a>
+    <nav>
+      <ul class="nav-list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="calendars.html">World Calendars</a></li>
+        <li><a href="ethiopian.html" style="color:var(--accent)">Ethiopian 13-Month Calendar</a></li>
+        <li><a href="timezones.html">World Time Zones</a></li>
+        <li><a href="cosmos.html">Sun, Stars & Horoscope</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobile-nav">
+    <div class="panel-head"><strong style="color:var(--accent)">Ethiopian Calendar</strong><button class="close-btn" id="nav-close">✕</button></div>
+    <ul>
+      <li><a href="index.html">Home & Weather</a></li>
+      <li><a href="calendars.html">World Calendars</a></li>
+      <li><a href="ethiopian.html">Ethiopian 13-Month Calendar</a></li>
+      <li><a href="timezones.html">World Time Zones</a></li>
+      <li><a href="cosmos.html">Sun, Stars & Horoscope</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+    </ul>
+  </div>
+  <div class="nav-backdrop" id="nav-backdrop"></div>
+</header>
+
+<main>
+  <section class="page">
+    <div class="section-head">
+      <span class="kicker">የኢትዮጵያ ዘመን · 13 Months</span>
+      <h2>Ethiopian 13-Month Calendar</h2>
+      <p>Ethiopia follows a 13-month solar calendar: twelve 30-day months plus <strong>Pagumē</strong> (5 days, 6 in leap years). The year runs roughly 7–8 years behind the Gregorian calendar, and the New Year (<strong>Enkutatash</strong>) falls on 11 or 12 September. Pick a year below to see all 13 months with their Gregorian equivalents.</p>
+    </div>
+
+    <div class="panel" style="margin-bottom:2rem">
+      <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+        <label style="font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted)">Ethiopian year</label>
+        <input type="number" id="eth-year" min="1" max="2100" style="width:120px;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:#0a1020;color:var(--text)">
+        <span class="muted">Current Ethiopian year: <strong id="eth-year-label" style="color:var(--accent)"></strong> · New Year (Enkutatash) ≈ 11 Sep Gregorian</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3 style="margin-bottom:1rem">All 13 months of Ethiopian year <span id="eth-year-label2"></span></h3>
+      <div id="eth-year-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem"></div>
+    </div>
+
+    <div class="section">
+      <div class="panel">
+        <h3 style="margin-bottom:0.75rem">Gregorian comparison — Ethiopian year <span id="eth-year-label3"></span></h3>
+        <p class="muted" style="margin-bottom:1rem">Month-by-month correspondence: each Ethiopian month's first and last day expressed in Gregorian dates.</p>
+        <table class="compare-table">
+          <thead>
+            <tr><th>Ethiopian month</th><th>Days</th><th>Begins (Gregorian)</th><th>Ends (Gregorian)</th><th>Gregorian span</th></tr>
+          </thead>
+          <tbody id="comp-table"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="panel">
+        <h3 style="margin-bottom:0.75rem">Single-date converter</h3>
+        <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap">
+          <input type="number" id="conv-gy" min="1" max="2100" placeholder="Year" style="width:90px;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:#0a1020;color:var(--text)">
+          <input type="number" id="conv-gm" min="1" max="12" placeholder="Month" style="width:90px;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:#0a1020;color:var(--text)">
+          <input type="number" id="conv-gd" min="1" max="31" placeholder="Day" style="width:90px;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:#0a1020;color:var(--text)">
+          <button class="btn-primary" id="conv-btn">Convert → Ethiopian</button>
+        </div>
+        <div id="conv-out" style="margin-top:1rem;color:var(--text-dim)"></div>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      <strong>Worldviews &amp; calendars.</strong> The Ethiopian calendar is a civil and religious timekeeping system; its months and leap rule work identically regardless of the cosmological model one adopts. Mainstream astronomy describes Earth as a globe orbiting the Sun, which is why seasons and the date of the September equinox anchor the Ethiopian New Year. Some communities discuss alternative (including flat-earth) framings of the same sky; this site presents the calendar itself, together with the mainstream explanation, so readers can compare. For religious feasts (Enkutatash, Timkat, etc.), confirm dates with the Ethiopian Orthodox Tewahedo Church or local authorities.
+    </div>
+
+    <div class="section" style="margin-top:1.5rem">
+      <div class="panel">
+        <h3 style="margin-bottom:0.75rem">Did you know?</h3>
+        <ul style="color:var(--text-dim);margin-left:1.2rem">
+          <li>Pagumē has 5 days in common years and 6 in leap years (Ethiopian leap years occur every 4 years: year % 4 === 3).</li>
+          <li>The Ethiopian year begins on 1 Mäskäräm, which is 11 September (Gregorian) in most years and 12 September the year before a Gregorian leap year.</li>
+          <li>Ethiopian time counts the day from sunrise (12-hour "Ethiopian clock"), so 7:00 AM Ethiopian time is 1:00 PM by the 12-hour Western clock.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>Ethiopian Calendar</h4>
+        <p class="muted" style="font-size:0.9rem">13 months: 12 × 30 days + Pagumē · Enkutatash · Ethiopic/Geʼez month names.</p>
+      </div>
+      <div>
+        <h4>Features</h4>
+        <ul>
+          <li><a href="index.html">Weather Forecast</a></li>
+          <li><a href="calendars.html">World Calendars</a></li>
+          <li><a href="timezones.html">Time Zones</a></li>
+          <li><a href="cosmos.html">Sun &amp; Stars</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Convert</h4>
+        <ul>
+          <li><a href="calendars.html">Gregorian ↔ All</a></li>
+          <li><a href="ethiopian.html">Ethiopian year view</a></li>
+          <li><a href="calendars.html">Chinese calendar</a></li>
+          <li><a href="calendars.html">Hindu / Punjabi</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="footer-year"></span> Global Weather Forecast &amp; Calendars</span>
+      <span>Religious dates — verify with local authorities.</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
